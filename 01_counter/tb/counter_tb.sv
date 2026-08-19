@@ -10,14 +10,25 @@ module counter_tb;
 
     always #5 clk = ~clk;
 
-    initial begin
+    initial begin // stimulus
         clk = 0;
         reset = 1;
 
         #12 reset = 0;
+
+        #20 reset = 1;
     end
 
-    initial begin
+    initial begin // test reset
+    @(posedge reset);
+    @(posedge clk);
+    #1; // tiny delay to check count just after rising edge of clk
+    assert (count == 0)
+        else $error("Reset asserted, count not zero");
+    $display("Reset test passed");
+    end
+    
+    initial begin // test counting
         expected = 0;
         
         @(negedge reset);
@@ -27,11 +38,13 @@ module counter_tb;
             
             assert (count == expected)
                 else $error("Count does not match expected");
-
-            ++expected;
             
+            if (!reset) 
+                ++expected;
+            else
+                expected = 0;       
     end
-
+    
     $finish;
 end
 endmodule
