@@ -1,6 +1,6 @@
 module counter_tb;
     logic clk, reset; 
-    logic [3:0] count, expected_count;
+    logic [3:0] count, expected;
 
     counter dut (
         .clk(clk),
@@ -14,17 +14,25 @@ module counter_tb;
         clk = 0;
         reset = 1;
 
-        #15 reset = 0;
-        #50 $finish;
+        #12 reset = 0;
     end
 
     initial begin
+        expected = 0;
+        @(negedge reset);
         repeat (10) begin
             @(posedge clk);
-            if (!reset) begin
-                $display(count);
-                 
-            end
-        end
+            if (expected == count)
+                $display("t=%0t PASS: expected=%0d actual=%0d",
+                        $time, expected, count);
+            else
+                $display("t=%0t FAIL: expected=%0d actual=%0d",
+                        $time, expected, count);
+
+            ++expected;
+            
     end
+
+    $finish;
+end
 endmodule
