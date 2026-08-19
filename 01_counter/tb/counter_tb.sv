@@ -1,6 +1,6 @@
 module counter_tb;
     logic clk, reset; 
-    logic [3:0] count, expected;
+    logic [3:0] count, expected, expected_overflow;
 
     counter dut (
         .clk(clk),
@@ -17,6 +17,8 @@ module counter_tb;
         #12 reset = 0;
 
         #20 reset = 1;
+
+        #10 reset = 0;
     end
 
     initial begin // test reset
@@ -42,9 +44,54 @@ module counter_tb;
             if (!reset) 
                 ++expected;
             else
-                expected = 0;       
+                expected = 0;   
+        end    
+        $display("Counting test passed");
     end
+
+    initial begin // test overflow
+        expected_overflow = 0;
+
+        @(negedge reset);
+        
+        while (expected_overflow < 14) begin
+            @(posedge clk);
+
+            if (!reset)
+                ++expected_overflow;
+            else
+                expected_overflow = 0;
+        end
+        
+        repeat (3) begin
+            @(posedge clk);
+
+            assert (count == expected_overflow)
+                else $error("Overflow error");
+
+            if (!reset) 
+                ++expected_overflow;
+            else
+                expected_overflow = 0;   
+        end
+        $display("Overflow test passed");
+        $finish;
+    end
+
+    initial begin // test reset during operation
+    @(negedge reset);
     
-    $finish;
-end
+    @(posedge reset);
+
+    assert (count != 0)
+        else $error("Counter did not start counting");
+    
+    @(posedge clk);
+
+    #1;
+    assert (count == 0)
+        else $error("Mid operation reset failed");
+    
+    $display("Mid operation reset test passed");
+    end
 endmodule
