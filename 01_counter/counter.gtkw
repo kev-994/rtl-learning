@@ -1,0 +1,23 @@
+[*]
+[*] GTKWave Analyzer v3.3.126 (w)1999-2026 BSI
+[*] Thu Aug 20 10:25:18 2026
+[*]
+[dumpfile] "/home/user/projects/rtl-learning/01_counter/counter.vcd"
+[dumpfile_mtime] "Thu Aug 20 10:23:53 2026"
+[dumpfile_size] 1233
+[savefile] "/home/user/projects/rtl-learning/01_counter/counter.gtkw"
+[timestart] 0
+[size] 1000 600
+[pos] -1 -1
+*-6.108769 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 297
+[signals_width] 110
+[sst_expanded] 1
+[sst_vpaned_height] 157
+@28
+counter_tb.clk
+counter_tb.reset
+@22
+counter_tb.count[3:0]
+[pattern_trace] 1
+[pattern_trace] 0

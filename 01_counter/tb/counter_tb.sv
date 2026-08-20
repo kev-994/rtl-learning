@@ -11,6 +11,9 @@ module counter_tb;
     always #5 clk = ~clk;
 
     initial begin // stimulus
+        $dumpfile("counter.vcd");
+        $dumpvars(0, counter_tb);
+        
         clk = 0;
         reset = 1;
 
