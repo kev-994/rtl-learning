@@ -1,0 +1,26 @@
+[*]
+[*] GTKWave Analyzer v3.3.126 (w)1999-2026 BSI
+[*] Sat Aug 29 23:07:35 2026
+[*]
+[dumpfile] "/home/user/projects/rtl-learning/fsm/sim/fsm.vcd"
+[dumpfile_mtime] "Sat Aug 29 23:01:23 2026"
+[dumpfile_size] 1227
+[savefile] "/home/user/projects/rtl-learning/fsm/sim/fsm.gtkw"
+[timestart] 0
+[size] 1000 600
+[pos] -1 -1
+*-14.814335 0 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] fsm_tb.
+[sst_width] 297
+[signals_width] 78
+[sst_expanded] 1
+[sst_vpaned_height] 157
+@28
+fsm_tb.dut.clk
+fsm_tb.dut.ena
+fsm_tb.dut.reset
+fsm_tb.dut.red
+fsm_tb.dut.green
+fsm_tb.dut.yellow
+[pattern_trace] 1
+[pattern_trace] 0
