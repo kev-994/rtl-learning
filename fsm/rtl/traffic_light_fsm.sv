@@ -19,9 +19,9 @@ module fsm(
     // state transition logic
     always_comb begin
         case (state) 
-        RED:     nextState = ena ?  GREEN : RED;
+        RED:     nextState = ena ?  GREEN : RED; 
         GREEN:   nextState = ena ? YELLOW : GREEN;
-        YELLOW:  nextState = ena ? RED : YELLOW;
+        YELLOW:  nextState = ena ? RED : YELLOW; 
         default: nextState = RED;
         endcase
     end
