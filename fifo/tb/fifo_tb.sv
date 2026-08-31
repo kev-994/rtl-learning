@@ -29,7 +29,7 @@ module fifo_tb #(
         wr_data = value;
         wr_en = 1;
 
-        valid_write = wr_en && !full && ref_fifo.size() < DEPTH;
+        valid_write = ref_fifo.size() < DEPTH;
 
         if (valid_write) ref_fifo.push_back(wr_data);
 
@@ -45,7 +45,7 @@ module fifo_tb #(
         
         rd_en = 1;
 
-        valid_read = rd_en && !empty && ref_fifo.size() > 0;
+        valid_read = ref_fifo.size() > 0;
 
         if (valid_read) ref_data = ref_fifo.pop_front();
 
@@ -66,7 +66,7 @@ module fifo_tb #(
         wr_en = 0;
         rd_en = 0;
         wr_data = 0;
-        /*
+        
         // TEST RESET
         repeat (2) @(posedge clk); 
         #1;
@@ -401,7 +401,15 @@ module fifo_tb #(
         assert (!full)  else $error("FIFO should not be full");
         assert (rd_data == 8'h04) else $error("Read operation failed."); // value written in whilst read was high 
         rd_en = 0;
-        */
+        
+
+
+
+
+
+
+
+
 
 
         // REFERENCE MODEL
@@ -451,7 +459,7 @@ module fifo_tb #(
         read();
         read();
         read();
-        assert (ref_fifo.size == 0) else $error("Reference model should be empty.");
+        assert (ref_fifo.size() == 0) else $error("Reference model should be empty.");
         
 
 
@@ -583,9 +591,21 @@ module fifo_tb #(
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
         
         // generating randomized tests
-        repeat (100) begin
+        repeat (1000) begin
             wr = $urandom % 2;
             if (wr[0]) begin
                 random_data = $urandom;
@@ -593,14 +613,19 @@ module fifo_tb #(
             end
             else 
                 read();
-        end 
+            
+            if (ref_fifo.size() == 0) 
+                assert (empty) else $error("Reference model doesn't match FIFO");
+            if (ref_fifo.size() == DEPTH) 
+                assert (full) else $error("Reference model doesn't match FIFO");
+            
+        end // would be good to check ref_fifo.size() == occupancy
 
-        // would be good to check ref_fifo.size() == occupancy
+        // drain contents and check against DUT
+        while (ref_fifo.size() != 0)
+            read();
+        assert (ref_fifo.size() == 0 && empty && !full) else $error("Issue after draining contents following randomized tests.");
         
-
-
-
-
         $finish;
     end 
 
