@@ -5,6 +5,7 @@ module fifo_tb #(
 );
     logic clk, reset, wr_en, rd_en, full, empty;
     logic [WIDTH-1:0] wr_data, rd_data;
+    logic [WIDTH-1:0] ref_fifo [$];
 
     fifo #(
         .WIDTH(WIDTH),
@@ -271,7 +272,7 @@ module fifo_tb #(
         wr_en = 0; // disable writing then read all values currently in FIFO
 
         rd_en = 1;
-        repeat (6) @(posedge clk);
+        repeat (6) @(posedge clk); // should really check all of these reads
         #1
         rd_en = 0;
 
@@ -316,6 +317,54 @@ module fifo_tb #(
         assert (!full)  else $error("FIFO should not be full.");
         assert (rd_data == 8'h10) else $error("Read operation failed.");
         rd_en = 0;
+
+
+
+        // TEST SIMULTANEOUS R/W
+        reset = 1;
+        @(posedge clk);
+        #1;
+        reset = 0;
+
+        wr_en = 1;
+        wr_data = 8'h01;
+        @(posedge clk);
+        #1;
+        wr_data = 8'h02;
+        @(posedge clk);
+        #1;
+        wr_data = 8'h03;
+        @(posedge clk);
+        #1;
+
+        rd_en = 1; // now read and write both enabled
+        wr_data = 8'h04;
+        @(posedge clk);
+        #1;
+        assert (!empty) else $error("FIFO should not be empty");
+        assert (!full)  else $error("FIFO should not be full");
+        assert (rd_data == 8'h01) else $error("Read operation failed."); // read should occur
+        wr_en = 0; // disable writing and read the rest of the values
+
+        @(posedge clk);
+        #1;
+        assert (!empty) else $error("FIFO should not be empty");
+        assert (!full)  else $error("FIFO should not be full");
+        assert (rd_data == 8'h02) else $error("Read operation failed.");
+
+        @(posedge clk);
+        #1;
+        assert (!empty) else $error("FIFO should not be empty");
+        assert (!full)  else $error("FIFO should not be full");
+        assert (rd_data == 8'h03) else $error("Read operation failed.");
+
+        @(posedge clk);
+        #1;
+        assert (empty) else $error("FIFO should be empty"); // should now be empty
+        assert (!full)  else $error("FIFO should not be full");
+        assert (rd_data == 8'h04) else $error("Read operation failed."); // value written in whilst read was high 
+        rd_en = 0;
+        
 
 
         $finish;
