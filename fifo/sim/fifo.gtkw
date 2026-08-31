@@ -1,0 +1,31 @@
+[*]
+[*] GTKWave Analyzer v3.3.126 (w)1999-2026 BSI
+[*] Mon Aug 31 16:55:54 2026
+[*]
+[dumpfile] "/home/user/projects/rtl-learning/fifo/sim/fifo.vcd"
+[dumpfile_mtime] "Mon Aug 31 16:51:05 2026"
+[dumpfile_size] 115611
+[savefile] "/home/user/projects/rtl-learning/fifo/sim/fifo.gtkw"
+[timestart] 0
+[size] 1000 600
+[pos] -1 -1
+*-15.940215 19400 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 297
+[signals_width] 126
+[sst_expanded] 1
+[sst_vpaned_height] 157
+@28
+fifo_tb.clk
+fifo_tb.reset
+fifo_tb.wr_en
+@22
+fifo_tb.wr_data[7:0]
+@28
+fifo_tb.rd_en
+@22
+fifo_tb.rd_data[7:0]
+@28
+fifo_tb.full
+fifo_tb.empty
+[pattern_trace] 1
+[pattern_trace] 0

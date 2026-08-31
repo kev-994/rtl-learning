@@ -61,6 +61,9 @@ module fifo_tb #(
     always #5 clk = ~clk; // clock time period 10 ns
 
     initial begin
+        $dumpfile("sim/fifo.vcd");
+        $dumpvars(0, fifo_tb);
+        
         clk = 0;
         reset = 1;
         wr_en = 0;
