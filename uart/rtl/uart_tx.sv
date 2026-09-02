@@ -23,21 +23,19 @@ module uart_tx #(
 
     always_ff @(posedge clk) begin
         if (reset || (state == IDLE && tx_start)) begin
-            baud_tick <= 0;
             count <= 0; // reset the baud counter when tx_start
         end
         
         else if (count == MAX_COUNT) begin
-            baud_tick <= 1;
             count <= 0;
         end
         
         else begin
-            baud_tick <= 0;
             count <= count + 1;
         end
     end
 
+    assign baud_tick = (count == MAX_COUNT);
 
     // TX
     localparam BIT_COUNT_WIDTH = $clog2(DATA_WIDTH); // fails if data width is 1 bit 

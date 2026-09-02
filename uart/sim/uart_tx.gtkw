@@ -1,0 +1,28 @@
+[*]
+[*] GTKWave Analyzer v3.3.126 (w)1999-2026 BSI
+[*] Wed Sep  2 16:58:35 2026
+[*]
+[dumpfile] "/home/user/projects/rtl-learning/uart/sim/uart_tx.vcd"
+[dumpfile_mtime] "Wed Sep  2 16:54:31 2026"
+[dumpfile_size] 16562
+[savefile] "/home/user/projects/rtl-learning/uart/sim/uart_tx.gtkw"
+[timestart] 0
+[size] 1000 600
+[pos] -1 -1
+*-18.372391 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] uart_tx_tb.
+[sst_width] 297
+[signals_width] 126
+[sst_expanded] 1
+[sst_vpaned_height] 157
+@28
+uart_tx_tb.dut.clk
+uart_tx_tb.dut.reset
+@22
+uart_tx_tb.dut.data_in[7:0]
+@28
+uart_tx_tb.dut.tx_start
+uart_tx_tb.dut.tx
+uart_tx_tb.dut.busy
+[pattern_trace] 1
+[pattern_trace] 0
