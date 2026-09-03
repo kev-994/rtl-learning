@@ -112,18 +112,99 @@ module stream_pipeline_tb;
 
         in_valid = 0;
 
-        assert (in_ready) else $error("in_ready asserted during continuous streaming.");  // out_ready is still high
-        assert (out_valid) else $error("out_valid not asserted though buffer is full.");
+        assert (in_ready) else $error("in_ready not asserted during continuous streaming.");  // out_ready is still high
+        assert (out_valid) else $error("out_valid not asserted during continous streaming.");
         assert (out_data == test_data2) else $error("out_data has unexpected value.");
     endtask
+
+    task automatic send_data(input logic [DATA_WIDTH-1:0] test_data);
+        in_data = test_data;
+        
+        while (!in_ready) begin
+            @(posedge clk);
+            #1;
+        end
+
+        @(posedge clk);
+        #1;
+    endtask
+
+
+    task automatic test_continuous_stream();
+        reset_sp();
+
+        out_ready = 1'b1;
+        in_valid  = 1'b1;
+
+        send_data(8'hA5);       
+        assert (in_ready) else $error("in_ready not asserted during continuous streaming.");  // out_ready is still high
+        assert (out_valid) else $error("out_valid not asserted during continous streaming.");
+        assert (out_data == 8'hA5) else $error("out_data has unexpected value.");
+
+        send_data(8'h3C);
+        assert (in_ready) else $error("in_ready not asserted during continuous streaming.");  // out_ready is still high
+        assert (out_valid) else $error("out_valid not asserted during continous streaming.");
+        assert (out_data == 8'h3C) else $error("out_data has unexpected value.");
+
+        send_data(8'h7F);
+        assert (in_ready) else $error("in_ready not asserted during continuous streaming.");  // out_ready is still high
+        assert (out_valid) else $error("out_valid not asserted during continous streaming.");
+        assert (out_data == 8'h7F) else $error("out_data has unexpected value.");
+
+        send_data(8'h12);
+        assert (in_ready) else $error("in_ready not asserted during continuous streaming.");  // out_ready is still high
+        assert (out_valid) else $error("out_valid not asserted during continous streaming.");
+        assert (out_data == 8'h12) else $error("out_data has unexpected value.");
+
+        send_data(8'hE1);
+        assert (in_ready) else $error("in_ready not asserted during continuous streaming.");  // out_ready is still high
+        assert (out_valid) else $error("out_valid not asserted during continous streaming.");
+        assert (out_data == 8'hE1) else $error("out_data has unexpected value.");
+
+        out_ready = 1'b0;
+        in_valid  = 1'b0;
+    endtask
+
+    task automatic test_stall();
+        reset_sp();
+
+        out_ready = 1'b1;
+        in_valid  = 1'b1;
+
+        send_data(8'hA5);       
+        assert (in_ready) else $error("in_ready not asserted during continuous streaming.");  // out_ready is high
+        assert (out_valid) else $error("out_valid not asserted during continous streaming.");
+        assert (out_data == 8'hA5) else $error("out_data has unexpected value.");
+
+        out_ready = 1'b0;
+
+        in_data = 8'h3C;
+        repeat (5) begin
+            @(posedge clk);
+            #1;
+            assert (!in_ready) else $error("in_ready asserted though buffer is full.");  // out_ready is low
+            assert (out_valid) else $error("out_valid not asserted during continous streaming.");
+            assert (out_data == 8'hA5) else $error("out_data has unexpected value.");
+            assert (in_data == 8'h3C) else $error("Producer changed data while transaction was stalled.");
+        end
+
+        out_ready = 1'b1;
+
+        @(posedge clk);
+        #1; 
+
+        assert (in_ready) else $error("in_ready not asserted during continuous streaming.");  // out_ready is high
+        assert (out_valid) else $error("out_valid not asserted during continous streaming.");
+        assert (out_data == 8'h3C) else $error("out_data has unexpected value.");
+
+        out_ready = 1'b0;
+        in_valid  = 1'b0;
+    endtask
+
 
     always #5 clk = ~clk; // time period of 10ns
 
     initial begin
-        $dumpfile("sim/stream_pipeline.vcd");
-        $dumpvars(0, stream_pipeline_tb);
-        $dumpvars(0, stream_pipeline_tb.dut);
-        
         clk       = 0;
         reset     = 1;
         in_valid  = 0;
@@ -158,6 +239,13 @@ module stream_pipeline_tb;
         // test simultaneous transfer
         test_simultaneous_transfer(8'hA5, 8'h3C);
 
+
+        // test continuous stream
+        test_continuous_stream();
+
+
+        // test stalling, mid continous stream
+        test_stall();
         $finish;
     end
 
