@@ -63,7 +63,7 @@ module uart_rx_tb #(
         end
     endtask
 
-    task automatic test_invalid_data(input logic [DATA_WIDTH-1:0] test_data);
+    task automatic test_invalid_stop(input logic [DATA_WIDTH-1:0] test_data);
         reset_rx();
         received_valid = 0;
         
@@ -151,14 +151,17 @@ module uart_rx_tb #(
 
 
         // test invalid data
-        test_invalid_data(8'b1010_0101);
-        test_invalid_data(8'b0000_0000);
-        test_invalid_data(8'b1111_1111);
-        test_invalid_data(8'b0101_1010);
-        test_invalid_data(8'b0000_0001);
-        test_invalid_data(8'b1000_0000);
+        test_invalid_stop(8'b1010_0101);
+        test_invalid_stop(8'b0000_0000);
+        test_invalid_stop(8'b1111_1111);
+        test_invalid_stop(8'b0101_1010);
+        test_invalid_stop(8'b0000_0001);
+        test_invalid_stop(8'b1000_0000);
 
-
+        /*
+        Parameterisation/edge-case testing would be the next step.
+        It's just kind of long.
+        */
 
         $finish;
     
