@@ -228,6 +228,9 @@ module arithmetic_datapath_tb;
             else $error("Expected %0d, got %0d", expected, out_data);
     endtask
 
+    
+    
+    
     task automatic test_continuous_arithmetic_stream();
         reset_ad();
 
@@ -263,10 +266,93 @@ module arithmetic_datapath_tb;
         out_ready = 1'b0;
     endtask
 
+    
+    
+    
+    task automatic test_arithmetic_stall();
+        reset_ad();
+
+        in_valid  = 1'b1;
+        out_ready = 1'b1;
+
+        send_data(8'hA5);
+        send_data(8'h3C);
+        send_data(8'h7F);
+        
+        // pipeline now filled
+
+        out_ready = 1'b0; // stall pipeline, apply backpressure
+        in_data   = 8'h12; // should be held at input
+        expected_stage0 = {1'b0, 8'h12} + {1'b0, A};
+        expected_stage1 = {{DATA_WIDTH{1'b0}}, expected_stage0} * B;
+        expected        = {1'b0, expected_stage1} + {{(DATA_WIDTH+1){1'b0}}, C};
+        ref_expected.push_back(expected);
+
+        repeat (5) begin 
+            @(posedge clk);
+            #1;
+
+            assert (!in_ready) else $error("pipeline should not be ready to accept data.");
+            assert (out_valid) else $error("stage 2 should remain full during stall.");
+            assert (out_data == ref_expected[0]) 
+                else $error("Expected %0d, got %0d", ref_expected[0], out_data);
+        end
+
+        out_ready = 1'b1; // pipeline should start moving again
+
+        // A5 leaves
+        @(posedge clk);
+        #1;
+        ref_expected.pop_front();
+        
+        in_valid  = 1'b0; // stop accepting data
+
+        assert (in_ready)  else $error("pipeline should be ready to accept data.");
+        assert (out_valid) else $error("stage 2 should be full.");
+        assert (out_data == ref_expected[0]) 
+            else $error("Expected %0d, got %0d", ref_expected[0], out_data);
+        
+        // 3C leaves
+        @(posedge clk);
+        #1;
+        ref_expected.pop_front();
+
+        assert (out_valid) else $error("stage 2 should be full.");
+        assert (out_data == ref_expected[0]) 
+            else $error("Expected %0d, got %0d", ref_expected[0], out_data);
+        
+        // 7F leaves
+        @(posedge clk);
+        #1;
+        ref_expected.pop_front();
+
+        assert (out_valid) else $error("stage 2 should be full.");
+        assert (out_data == ref_expected[0]) 
+            else $error("Expected %0d, got %0d", ref_expected[0], out_data);
+
+        // 12 leaves, empty pipeline
+        @(posedge clk);
+        #1;
+        ref_expected.pop_front();
+        
+        assert (!out_valid) else $error("stage 2 should be empty.");
+
+        in_valid  = 1'b0; 
+        out_ready = 1'b0;
+    endtask
+
+
+
+
+
 
     always #5 clk = ~clk;
 
     initial begin 
+        $dumpfile("sim/arithmetic_datapath.vcd");
+        $dumpvars(0, arithmetic_datapath_tb);
+        $dumpvars(0, arithmetic_datapath_tb.dut);
+        
         clk       = 0;
         reset     = 1;
         in_valid  = 0;
@@ -293,9 +379,11 @@ module arithmetic_datapath_tb;
 
         // POST-ARITHMETIC
 
-        test_single_arithmetic_transaction(8'hA5);
+        test_single_arithmetic_transaction(8'hFF);
 
         test_continuous_arithmetic_stream();
+
+        test_arithmetic_stall();
 
 
         $finish;
