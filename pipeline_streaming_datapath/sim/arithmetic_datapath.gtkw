@@ -1,0 +1,30 @@
+[*]
+[*] GTKWave Analyzer v3.3.126 (w)1999-2026 BSI
+[*] Fri Sep  4 13:29:09 2026
+[*]
+[dumpfile] "/home/user/projects/rtl-stuff/pipeline_streaming_datapath/sim/arithmetic_datapath.vcd"
+[dumpfile_mtime] "Fri Sep  4 13:23:09 2026"
+[dumpfile_size] 3527
+[savefile] "/home/user/projects/rtl-stuff/pipeline_streaming_datapath/sim/arithmetic_datapath.gtkw"
+[timestart] 0
+[size] 1000 600
+[pos] -1 -1
+*-14.434298 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 297
+[signals_width] 142
+[sst_expanded] 1
+[sst_vpaned_height] 157
+@28
+arithmetic_datapath_tb.clk
+arithmetic_datapath_tb.reset
+arithmetic_datapath_tb.in_ready
+arithmetic_datapath_tb.in_valid
+@22
+arithmetic_datapath_tb.in_data[7:0]
+@28
+arithmetic_datapath_tb.out_ready
+arithmetic_datapath_tb.out_valid
+@22
+arithmetic_datapath_tb.out_data[17:0]
+[pattern_trace] 1
+[pattern_trace] 0
